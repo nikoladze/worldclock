@@ -57,7 +57,7 @@ def print_table(timezones, reftime, long=False):
         utcoffset_for_timezone[timezone_str] = format_utcoffset(tz, reftime)
 
     max_len_also = 120
-    header = f"{'Name':<20} {'Abbr':<5} {'UTC offset':<10} {'Time':<18} {'Same time also in':<{max_len_also+4}}"
+    header = f"{'Name':<20} {'Abbr':<5} {'UTC offset':<10} {'Time':<19} {'Same time also in':<{max_len_also+3}}"
     print(header)
     print("=" * len(header))
     for abbr, timezone in timezones.items():
