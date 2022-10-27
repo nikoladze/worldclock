@@ -66,7 +66,7 @@ def print_table(timezones, reftime, long=False):
             tz = dateutil.parser.parse("00:00 " + timezone).tzinfo
         utcoffset = format_utcoffset(tz, reftime)
         info = f"({abbr:<6} UTC{utcoffset})"
-        also_in_str = " ".join(sorted(timezones_per_utcoffset[utcoffset]))
+        also_in_str = ", ".join(sorted(timezones_per_utcoffset[utcoffset]))
         if len(also_in_str) > max_len_also and not long:
             also_in_str = also_in_str[:max_len_also] + "..."
         print(
