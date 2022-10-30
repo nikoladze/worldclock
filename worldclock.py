@@ -82,6 +82,12 @@ def main(args=None):
     parser.add_argument("--long", action="store_true")
     parser.add_argument("--extra-list", nargs="+")
     parser.add_argument("--list-timezones", action="store_true")
+    parser.add_argument(
+        "--fold",
+        type=int,
+        choices={0, 1},
+        help="Explicitely choose earlier (0) or later (1) time for ambiguous times",
+    )
     args = parser.parse_args(args)
 
     timezones_for_parser = {k: dateutil.tz.gettz(v) for k, v in timezones.items()}
@@ -92,6 +98,9 @@ def main(args=None):
         reftime = datetime.now()
     if reftime.tzinfo is None:
         reftime = reftime.replace(tzinfo=dateutil.tz.tzlocal())
+
+    if args.fold is not None:
+        reftime = dateutil.tz.enfold(reftime, args.fold)
 
     if args.list_timezones:
         print_timezones(reftime)
