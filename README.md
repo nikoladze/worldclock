@@ -26,7 +26,6 @@ Times are parsed with [`dateutil.parse.parser`](https://dateutil.readthedocs.io/
 ./worldclock 2 pm CST
 ./worldclock 14:00 CST
 ./worldclock 14:00 -5
-./worldclock 14:00 -5
 ./worldclock 2023-10-30 14:00 CST
 ```
 
