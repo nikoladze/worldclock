@@ -35,6 +35,7 @@ def main(args=None):
     parser.add_argument("time", nargs="*")
     parser.add_argument("--long", action="store_true")
     parser.add_argument("--extra-list", nargs="+", help="also show these timezones")
+    parser.add_argument("--only-list", nargs="+", help="only show these timezones")
     parser.add_argument("--list-timezones", action="store_true")
     parser.add_argument(
         "--fold",
@@ -71,6 +72,9 @@ def main(args=None):
     if args.extra_list is not None:
         for abbr in args.extra_list:
             timezones[abbr] = abbr
+
+    if args.only_list is not None:
+        timezones = {abbr: abbr for abbr in args.only_list}
 
     print_table(timezones, reftime, long=args.long, dst_info=args.dst_info)
 
