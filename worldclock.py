@@ -83,7 +83,10 @@ def main(args=None):
             timezones[abbr] = abbr
 
     if args.only_list is not None:
-        timezones = {abbr: abbr for abbr in args.only_list}
+        timezones = {
+            abbr: abbr if abbr not in TIMEZONES else TIMEZONES[abbr]
+            for abbr in args.only_list
+        }
 
     print_table(
         timezones, reftime, long=args.long, dst_info=args.dst_info, also_in=args.also_in
