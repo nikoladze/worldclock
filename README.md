@@ -23,10 +23,10 @@ Show the time in different time zones at 12:00 US central time
 Times are parsed with [`dateutil.parse.parser`](https://dateutil.readthedocs.io/en/stable/parser.html#dateutil.parser.parse) - supports different notations, e.g.
 
 ``` sh
-./worldclock 2 pm CST
-./worldclock 14:00 CST
-./worldclock 14:00 -5
-./worldclock 2023-10-30 14:00 CST
+./worldclock.py 2 pm CST
+./worldclock.py 14:00 CST
+./worldclock.py 14:00 -5
+./worldclock.py 2023-10-30 14:00 CST
 ```
 
 Show additional time zones
@@ -39,6 +39,7 @@ Show only specific time zones
 
 ``` sh
 ./worldclock.py --only Africa/Nairobi Africa/Lagos
+./worldclock.py --only CST CET JST
 ```
 
 Show info on daylight saving time (if observed and until when)
