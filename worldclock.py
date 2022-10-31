@@ -33,7 +33,6 @@ def main(args=None):
 
     parser = ArgumentParser()
     parser.add_argument("time", nargs="*")
-    parser.add_argument("--long", action="store_true")
     parser.add_argument("--extra-list", nargs="+", help="also show these timezones")
     parser.add_argument("--only-list", nargs="+", help="only show these timezones")
     parser.add_argument("--list-timezones", action="store_true")
@@ -50,6 +49,16 @@ def main(args=None):
             "show if times are daylight-saving-times (dst) "
             "and until when if there is a change in the next 366 days"
         ),
+    )
+    parser.add_argument(
+        "--also-in",
+        action="store_true",
+        help="Show list of other time zones with the same time at the reference time",
+    )
+    parser.add_argument(
+        "--long",
+        action="store_true",
+        help="Don't shorten the list of other time zones shown through --also-in",
     )
     args = parser.parse_args(args)
 
@@ -76,7 +85,9 @@ def main(args=None):
     if args.only_list is not None:
         timezones = {abbr: abbr for abbr in args.only_list}
 
-    print_table(timezones, reftime, long=args.long, dst_info=args.dst_info)
+    print_table(
+        timezones, reftime, long=args.long, dst_info=args.dst_info, also_in=args.also_in
+    )
 
 
 def format_utcoffset(tz, reftime):
@@ -100,21 +111,20 @@ def print_timezones(reftime):
         print(f"{timezone_str:<30} UTC{utcoffset}")
 
 
-def print_table(timezones, reftime, long=False, dst_info=False):
+def print_table(timezones, reftime, long=False, dst_info=False, also_in=False):
     timezones_per_utcoffset = defaultdict(list)
     utcoffset_for_timezone = {}
     for timezone_str in all_timezones():
         tz = dateutil.tz.gettz(timezone_str)
         timezones_per_utcoffset[format_utcoffset(tz, reftime)].append(timezone_str)
         utcoffset_for_timezone[timezone_str] = format_utcoffset(tz, reftime)
-
     max_len_also = 110 if dst_info else 120
+    header = ["Name", "Abbr", "UTC offset", "Time"]
     if dst_info:
-        header = f"{'Name':<20} {'Abbr':<5} {'UTC offset':<10} {'Time':<16} DST {'until':<12} {'Same time also in':<{max_len_also+3}}"
-    else:
-        header = f"{'Name':<20} {'Abbr':<5} {'UTC offset':<10} {'Time':<19} {'Same time also in':<{max_len_also+3}}"
-    print(header)
-    print("=" * len(header))
+        header += ["DST", "until"]
+    if also_in:
+        header.append("Same time also in")
+    rows = []
     for abbr, timezone in timezones.items():
         if len(abbr) > 5:
             # in this case we probably don't have an abbreviation
@@ -124,19 +134,20 @@ def print_table(timezones, reftime, long=False, dst_info=False):
         if tz is None:
             tz = dateutil.parser.parse("00:00 " + timezone).tzinfo
         utcoffset = format_utcoffset(tz, reftime)
-        info = f"({abbr:<6} UTC{utcoffset})"
         also_in_str = ", ".join(sorted(timezones_per_utcoffset[utcoffset]))
         if len(also_in_str) > max_len_also and not long:
             also_in_str = also_in_str[:max_len_also] + "..."
         dt = reftime.astimezone(tz)
+        row = [timezone, abbr, "UTC" + utcoffset, f"{dt:%Y-%m-%d %H:%M}"]
         if dst_info:
             dt_dst_until = until_when_dst(dt)
             until_str = f"{dt_dst_until:%Y-%m-%d}" if dt_dst_until is not None else ""
-            dst_info = f"{'yes' if dt.dst() else 'no':<3} {until_str}"
-            output = f"{timezone:<20} {abbr:<5} UTC{utcoffset:<7} {dt:%Y-%m-%d %H:%M} {dst_info:<14}   {also_in_str}"
-        else:
-            output = f"{timezone:<20} {abbr:<5} UTC{utcoffset:<7} {dt:%Y-%m-%d %H:%M}    {also_in_str}"
-        print(output)
+            row.append("yes" if dt.dst() else "no")
+            row.append(until_str)
+        if also_in:
+            row.append(also_in_str)
+        rows.append(row)
+    tabulate(header, rows)
 
 
 def until_when_dst(dt):
@@ -156,6 +167,21 @@ def until_when_dst(dt):
                 dt -= timedelta(hours=1)
                 if bool(dt.dst()) == dst_flag:
                     return dt.replace(minute=0)
+
+
+def tabulate(header, rows):
+    col_widths = [
+        max(len(row[i]) for row in [header] + rows) for i in range(len(rows[0]))
+    ]
+
+    def format_row(row):
+        return "  ".join(f"{field:<{width}}" for field, width in zip(row, col_widths))
+
+    header_str = format_row(header)
+    print(header_str)
+    print("=" * len(header_str))
+    for row in rows:
+        print(format_row(row))
 
 
 if __name__ == "__main__":
