@@ -115,12 +115,13 @@ def print_timezones(reftime):
 
 
 def print_table(timezones, reftime, long=False, dst_info=False, also_in=False):
-    timezones_per_utcoffset = defaultdict(list)
-    utcoffset_for_timezone = {}
-    for timezone_str in all_timezones():
-        tz = dateutil.tz.gettz(timezone_str)
-        timezones_per_utcoffset[format_utcoffset(tz, reftime)].append(timezone_str)
-        utcoffset_for_timezone[timezone_str] = format_utcoffset(tz, reftime)
+    if also_in:
+        timezones_per_utcoffset = defaultdict(list)
+        utcoffset_for_timezone = {}
+        for timezone_str in all_timezones():
+            tz = dateutil.tz.gettz(timezone_str)
+            timezones_per_utcoffset[format_utcoffset(tz, reftime)].append(timezone_str)
+            utcoffset_for_timezone[timezone_str] = format_utcoffset(tz, reftime)
     max_len_also = 110 if dst_info else 120
     header = ["Name", "Abbr", "UTC offset", "Time"]
     if dst_info:
@@ -137,9 +138,10 @@ def print_table(timezones, reftime, long=False, dst_info=False, also_in=False):
         if tz is None:
             tz = dateutil.parser.parse("00:00 " + timezone).tzinfo
         utcoffset = format_utcoffset(tz, reftime)
-        also_in_str = ", ".join(sorted(timezones_per_utcoffset[utcoffset]))
-        if len(also_in_str) > max_len_also and not long:
-            also_in_str = also_in_str[:max_len_also] + "..."
+        if also_in:
+            also_in_str = ", ".join(sorted(timezones_per_utcoffset[utcoffset]))
+            if len(also_in_str) > max_len_also and not long:
+                also_in_str = also_in_str[:max_len_also] + "..."
         dt = reftime.astimezone(tz)
         row = [timezone, abbr, "UTC" + utcoffset, f"{dt:%Y-%m-%d %H:%M}"]
         if dst_info:
