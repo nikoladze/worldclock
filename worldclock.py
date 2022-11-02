@@ -12,6 +12,7 @@ from collections import defaultdict
 # adjust to your needs
 TIMEZONES = {
     "UTC": "UTC",
+    "AoE": "-12",
     "HST": "Pacific/Honolulu",
     "PST": "America/Tijuana",
     "CST": "America/Chicago",
