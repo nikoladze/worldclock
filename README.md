@@ -6,57 +6,58 @@ I'm no expert in timezones and the [tz database](https://www.iana.org/time-zones
 
 Useful links: <https://xkcd.com/now>, <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
 
+# Install
+```
+pipx install git+https://github.com/nikoladze/worldclock
+```
+
+
 # Examples
 
 Show the current time in different time zones
 
 ``` sh
-./worldclock.py
+worldclock
 ```
 
 Show the time in different time zones at 12:00 US central time
 
 ``` sh
-./worldclock.py 12:00 CST
+worldclock 12:00 CST
 ```
 
 Times are parsed with [`dateutil.parse.parser`](https://dateutil.readthedocs.io/en/stable/parser.html#dateutil.parser.parse) - supports different notations, e.g.
 
 ``` sh
-./worldclock.py 2 pm CST
-./worldclock.py 14:00 CST
-./worldclock.py 14:00 -5
-./worldclock.py 2023-10-30 14:00 CST
+worldclock 2 pm CST
+worldclock 14:00 CST
+worldclock 14:00 -5
+worldclock 2023-10-30 14:00 CST
 ```
 
 Show additional time zones
 
 ``` sh
-./worldclock.py --extra-list America/Mexico_City America/Cancun
+worldclock --extra-list America/Mexico_City America/Cancun
 ```
 
 Show only specific time zones
 
 ``` sh
-./worldclock.py --only Africa/Nairobi Africa/Lagos
-./worldclock.py --only CST CET JST
+worldclock --only Africa/Nairobi Africa/Lagos
+worldclock --only CST CET JST
 ```
 
 Show info on daylight saving time (if observed and until when)
 
 ``` sh
-./worldclock.py --dst
+worldclock --dst
 ```
 
 
 List all timezones and their utc offsets
 
 ``` sh
-./worldclock.py --list
-```
-
-# Install
-```
-pipx install git+https://github.com/nikoladze/worldclock
+worldclock --list
 ```
 
