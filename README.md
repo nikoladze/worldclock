@@ -54,3 +54,9 @@ List all timezones and their utc offsets
 ``` sh
 ./worldclock.py --list
 ```
+
+# Install
+```
+pipx install git+https://github.com/nikoladze/worldclock
+```
+
