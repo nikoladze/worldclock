@@ -7,8 +7,9 @@ I'm no expert in timezones and the [tz database](https://www.iana.org/time-zones
 Useful links: <https://xkcd.com/now>, <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
 
 # Install
+E.g. using uv
 ```
-pipx install git+https://github.com/nikoladze/worldclock
+uv tool install git+https://github.com/nikoladze/worldclock
 ```
 
 
